@@ -29,17 +29,17 @@ void Zoom::OnWheel(bool a_zoomOut)
 	}
 
 	// Step grows with distance so the far end does not take 40 notches.
-	const float step = cfg.zoomStep * (1.0f + cfg.distanceScaling * std::max(_target, 0.0f));
+	const float step = cfg.zoomStep * (1.0f + cfg.distanceScaling * (std::max)(_target, 0.0f));
 
 	if (a_zoomOut) {
 		if (_target >= 1.0f - 1e-4f) {
 			MapTransition::Get().OnOverscrollOut();
 			return;
 		}
-		_target = std::min(1.0f, _target + step);
+		_target = (std::min)(1.0f, _target + step);
 	} else {
 		MapTransition::Get().ResetOverscroll();
-		_target = std::max(_min, _target - step);
+		_target = (std::max)(_min, _target - step);
 		// At _min the engine's own handler performs the first-person switch.
 	}
 }

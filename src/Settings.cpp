@@ -94,12 +94,12 @@ void Settings::Load()
 
 	getB("debug.bdebuglogging", debugLogging);
 
-	maxZoomDistance = std::max(maxZoomDistance, 100.0f);
+	maxZoomDistance = (std::max)(maxZoomDistance, 100.0f);
 	zoomStep = std::clamp(zoomStep, 0.005f, 0.5f);
 	distanceScaling = std::clamp(distanceScaling, 0.0f, 10.0f);
 	smoothing = std::clamp(smoothing, 0.5f, 60.0f);
-	overscrollNotches = std::max(overscrollNotches, 1);
-	returnNotches = std::max(returnNotches, 1);
+	overscrollNotches = (std::max)(overscrollNotches, 1);
+	returnNotches = (std::max)(returnNotches, 1);
 
 	logs::info("settings: maxDist={} step={} scaling={} smoothing={} map={} overscroll={} scrollReturn={}",
 		maxZoomDistance, zoomStep, distanceScaling, smoothing, enableMapTransition, overscrollNotches,
