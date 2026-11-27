@@ -47,9 +47,6 @@ namespace
 				}
 				const auto id = btn->GetIDCode();
 				if (id != kWheelUp && id != kWheelDown) {
-					if (btn->IsDown() && MapTransition::Get().MapOpen() && MapOverlayClear()) {
-						MapTransition::Get().OnMapButton(id);
-					}
 					continue;
 				}
 				const bool zoomOut = (id == kWheelDown);

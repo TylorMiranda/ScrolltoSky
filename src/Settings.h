@@ -16,9 +16,7 @@ struct Settings
 	bool  blockInCombat = false;
 
 	// [Return]
-	bool  clickReturn = true;          // mouse button on the map returns to max third-person distance
-	int   returnButton = 2;            // mouse button id: 2 = wheel click
-	bool  scrollReturn = false;        // scroll in past the map's lowest height returns to the player
+	bool  scrollReturn = true;         // scroll in past the map's lowest height returns to max third person
 	int   returnNotches = 2;           // notches past the map floor before closing (scrollReturn)
 
 	// [Debug]

@@ -20,27 +20,6 @@ void MapTransition::Init()
 	} else {
 		logs::info("fMapWorldMinHeight not found; map floor will be learned at runtime");
 	}
-	LogButtonConflict();
-}
-
-void MapTransition::LogButtonConflict() const
-{
-	const auto& cfg = Settings::Get();
-	if (!cfg.clickReturn) {
-		return;
-	}
-	auto controls = RE::ControlMap::GetSingleton();
-	if (!controls) {
-		return;
-	}
-	const auto bound = controls->GetUserEventName(static_cast<std::uint32_t>(cfg.returnButton),
-		RE::INPUT_DEVICE::kMouse, RE::ControlMap::InputContextID::kMap);
-	if (bound.empty()) {
-		logs::info("return button (mouse {}) is unbound in the map context", cfg.returnButton);
-	} else {
-		logs::warn("return button (mouse {}) is already bound to \"{}\" in the map context; both will fire",
-			cfg.returnButton, bound);
-	}
 }
 
 // ---------------------------------------------------------------------------
@@ -199,19 +178,9 @@ void MapTransition::OnMapWheel(bool a_zoomOut)
 	}
 	if (++_inCount >= cfg.returnNotches) {
 		_inCount = 0;
-		// Scroll return: jump straight to the minimum third-person distance.
-		CloseMap(Zoom::Get().MinZoom());
+		// Scroll return: land at max third-person distance; scrolling in continues in gameplay.
+		CloseMap(1.0f);
 	}
-}
-
-void MapTransition::OnMapButton(std::uint32_t a_mouseButton)
-{
-	const auto& cfg = Settings::Get();
-	if (!cfg.clickReturn || a_mouseButton != static_cast<std::uint32_t>(cfg.returnButton)) {
-		return;
-	}
-	// Click return: land at max third-person distance; scrolling in continues in gameplay.
-	CloseMap(1.0f);
 }
 
 void MapTransition::CloseMap(float a_landingZoom)

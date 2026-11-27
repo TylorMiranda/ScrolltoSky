@@ -19,7 +19,6 @@ public:
 
 	// Map side
 	void OnMapWheel(bool a_zoomOut);
-	void OnMapButton(std::uint32_t a_mouseButton);
 	void OnMapCameraPreUpdate(RE::MapCameraStates::World* a_state);
 	void OnMenu(bool a_opening);
 
@@ -29,7 +28,6 @@ private:
 	bool CanOpenMap() const;
 	void OpenMap();
 	void CloseMap(float a_landingZoom);
-	void LogButtonConflict() const;
 
 	// third-person overscroll
 	int               _outCount = 0;

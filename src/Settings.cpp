@@ -89,8 +89,6 @@ void Settings::Load()
 	getB("map.bstartmapzoomedin", startMapZoomedIn);
 	getB("map.bblockincombat", blockInCombat);
 
-	getB("return.bclickreturn", clickReturn);
-	getI("return.ireturnbutton", returnButton);
 	getB("return.bscrollreturn", scrollReturn);
 	getI("return.ireturnnotches", returnNotches);
 
@@ -102,9 +100,8 @@ void Settings::Load()
 	smoothing = std::clamp(smoothing, 0.5f, 60.0f);
 	overscrollNotches = std::max(overscrollNotches, 1);
 	returnNotches = std::max(returnNotches, 1);
-	returnButton = std::clamp(returnButton, 0, 7);
 
-	logs::info("settings: maxDist={} step={} scaling={} smoothing={} map={} overscroll={} clickReturn={} (button {}) scrollReturn={}",
+	logs::info("settings: maxDist={} step={} scaling={} smoothing={} map={} overscroll={} scrollReturn={}",
 		maxZoomDistance, zoomStep, distanceScaling, smoothing, enableMapTransition, overscrollNotches,
-		clickReturn, returnButton, scrollReturn);
+		scrollReturn);
 }
