@@ -6,7 +6,7 @@ set_config("skyrim_vr", false)
 includes("lib/commonlibsse-ng")
 
 set_project("ScrollToSky")
-set_version("0.1.0")
+set_version("0.1.3")
 set_license("GPL-3.0")
 set_languages("c++23")
 set_warnings("allextra")

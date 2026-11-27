@@ -22,7 +22,7 @@ SKSE_PLUGIN_LOAD(const SKSE::LoadInterface* a_skse)
 	SKSE::Init(a_skse);
 
 	const auto ver = a_skse->RuntimeVersion();
-	logs::info("Scroll to Sky v0.1.0 loading on Skyrim {}", ver.string());
+	logs::info("Scroll to Sky v0.1.3 loading on Skyrim {}", ver.string());
 
 	Settings::Get().Load();
 	Hooks::Install();
