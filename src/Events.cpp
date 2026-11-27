@@ -15,6 +15,13 @@ namespace
 		return cam && cam->currentState && cam->currentState->id == RE::CameraState::kThirdPerson;
 	}
 
+	// True when no menu that takes mouse input is layered over the map.
+	bool MapOverlayClear()
+	{
+		auto ui = RE::UI::GetSingleton();
+		return ui && !ui->IsMenuOpen(RE::Console::MENU_NAME) && !ui->IsMenuOpen(RE::JournalMenu::MENU_NAME);
+	}
+
 	class InputSink final : public RE::BSTEventSink<RE::InputEvent*>
 	{
 	public:
@@ -40,6 +47,9 @@ namespace
 				}
 				const auto id = btn->GetIDCode();
 				if (id != kWheelUp && id != kWheelDown) {
+					if (btn->IsDown() && MapTransition::Get().MapOpen() && MapOverlayClear()) {
+						MapTransition::Get().OnMapButton(id);
+					}
 					continue;
 				}
 				const bool zoomOut = (id == kWheelDown);
@@ -57,8 +67,7 @@ namespace
 			}
 
 			if (MapTransition::Get().MapOpen()) {
-				// Ignore wheel input meant for the journal, console, etc. layered over the map.
-				if (ui->IsMenuOpen(RE::Console::MENU_NAME) || ui->IsMenuOpen(RE::JournalMenu::MENU_NAME)) {
+				if (!MapOverlayClear()) {
 					return;
 				}
 				MapTransition::Get().OnMapWheel(a_zoomOut);

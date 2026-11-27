@@ -20,6 +20,27 @@ void MapTransition::Init()
 	} else {
 		logs::info("fMapWorldMinHeight not found; map floor will be learned at runtime");
 	}
+	LogButtonConflict();
+}
+
+void MapTransition::LogButtonConflict() const
+{
+	const auto& cfg = Settings::Get();
+	if (!cfg.clickReturn) {
+		return;
+	}
+	auto controls = RE::ControlMap::GetSingleton();
+	if (!controls) {
+		return;
+	}
+	const auto bound = controls->GetUserEventName(static_cast<std::uint32_t>(cfg.returnButton),
+		RE::INPUT_DEVICE::kMouse, RE::ControlMap::InputContextID::kMap);
+	if (bound.empty()) {
+		logs::info("return button (mouse {}) is unbound in the map context", cfg.returnButton);
+	} else {
+		logs::warn("return button (mouse {}) is already bound to \"{}\" in the map context; both will fire",
+			cfg.returnButton, bound);
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -104,7 +125,7 @@ void MapTransition::OnMenu(bool a_opening)
 
 	if (_closedByUs) {
 		_closedByUs = false;
-		Zoom::Get().RequestReturnFromMap();
+		Zoom::Get().RequestReturnFromMap(_landingZoom);
 		logs::info("scroll-in: map closed, returning camera to player");
 	}
 }
@@ -131,7 +152,7 @@ void MapTransition::OnMapCameraPreUpdate(RE::MapCameraStates::World* a_state)
 void MapTransition::OnMapWheel(bool a_zoomOut)
 {
 	const auto& cfg = Settings::Get();
-	if (!cfg.enableReturn || !_zValid) {
+	if (!cfg.scrollReturn || !_zValid) {
 		return;
 	}
 
@@ -171,16 +192,31 @@ void MapTransition::OnMapWheel(bool a_zoomOut)
 	}
 	if (++_inCount >= cfg.returnNotches) {
 		_inCount = 0;
-		CloseMap();
+		// Scroll return: jump straight to close third person (fScrollReturnDistance).
+		CloseMap(Zoom::Get().DistanceToNormalized(cfg.scrollReturnDistance));
 	}
 }
 
-void MapTransition::CloseMap()
+void MapTransition::OnMapButton(std::uint32_t a_mouseButton)
+{
+	const auto& cfg = Settings::Get();
+	if (!cfg.clickReturn || a_mouseButton != static_cast<std::uint32_t>(cfg.returnButton)) {
+		return;
+	}
+	// Click return: land at max third-person distance; scrolling in continues in gameplay.
+	CloseMap(1.0f);
+}
+
+void MapTransition::CloseMap(float a_landingZoom)
 {
 	auto queue = RE::UIMessageQueue::GetSingleton();
 	if (!queue) {
 		return;
 	}
+	if (_closedByUs) {
+		return;
+	}
 	_closedByUs = true;
+	_landingZoom = a_landingZoom;
 	queue->AddMessage(RE::MapMenu::MENU_NAME, RE::UI_MESSAGE_TYPE::kHide, nullptr);
 }

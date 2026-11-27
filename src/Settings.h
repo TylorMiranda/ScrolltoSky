@@ -16,9 +16,11 @@ struct Settings
 	bool  blockInCombat = false;
 
 	// [Return]
-	bool  enableReturn = true;
-	int   returnNotches = 2;          // notches past the map's lowest height before closing
-	float returnLandingZoom = 0.85f;  // normalized zoom the camera eases to after the map closes
+	bool  clickReturn = true;          // mouse button on the map returns to max third-person distance
+	int   returnButton = 2;            // mouse button id: 2 = wheel click
+	bool  scrollReturn = false;        // scroll in past the map's lowest height returns to the player
+	int   returnNotches = 2;           // notches past the map floor before closing (scrollReturn)
+	float scrollReturnDistance = 210.0f;  // game units the camera jumps to (210 ~= 3 m)
 
 	// [Debug]
 	bool  debugLogging = false;

@@ -44,9 +44,22 @@ void Zoom::OnWheel(bool a_zoomOut)
 	}
 }
 
-void Zoom::RequestReturnFromMap()
+void Zoom::RequestReturnFromMap(float a_normalized)
 {
+	_returnZoom = std::clamp(a_normalized, _min, 1.0f);
 	_returnPending = true;
+}
+
+float Zoom::DistanceToNormalized(float a_units) const
+{
+	// Assumes the engine maps normalized zoom linearly onto [fVanityModeMinDist, fVanityModeMaxDist].
+	// Verify in game; adjust here if the curve turns out non-linear.
+	const float minDist = GameSettings::GetFloat("fVanityModeMinDist:Camera").value_or(150.0f);
+	const float maxDist = GameSettings::GetFloat("fVanityModeMaxDist:Camera").value_or(Settings::Get().maxZoomDistance);
+	if (maxDist <= minDist) {
+		return 1.0f;
+	}
+	return std::clamp((a_units - minDist) / (maxDist - minDist), _min, 1.0f);
 }
 
 void Zoom::PreUpdate(RE::ThirdPersonState* a_state)
@@ -65,8 +78,7 @@ void Zoom::PreUpdate(RE::ThirdPersonState* a_state)
 
 	if (_returnPending) {
 		_returnPending = false;
-		_current = 1.0f;
-		_target = cfg.returnLandingZoom;
+		_current = _target = _returnZoom;
 		_synced = true;
 	} else if (reentered) {
 		_target = _current = std::clamp(a_state->targetZoomOffset, _min, 1.0f);
