@@ -43,6 +43,7 @@ private:
 	int   _forceLowFrames = 0;
 	float _z = 0.0f;
 	bool  _zValid = false;
+	bool  _zoomMoved = false;
 
 	// map floor: engine INI value if present, otherwise learned from a stalled zoom
 	std::optional<float> _iniFloor;

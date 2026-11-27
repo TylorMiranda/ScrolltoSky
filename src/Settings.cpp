@@ -93,7 +93,6 @@ void Settings::Load()
 	getI("return.ireturnbutton", returnButton);
 	getB("return.bscrollreturn", scrollReturn);
 	getI("return.ireturnnotches", returnNotches);
-	getF("return.fscrollreturndistance", scrollReturnDistance);
 
 	getB("debug.bdebuglogging", debugLogging);
 
@@ -104,9 +103,8 @@ void Settings::Load()
 	overscrollNotches = std::max(overscrollNotches, 1);
 	returnNotches = std::max(returnNotches, 1);
 	returnButton = std::clamp(returnButton, 0, 7);
-	scrollReturnDistance = std::max(scrollReturnDistance, 0.0f);
 
-	logs::info("settings: maxDist={} step={} scaling={} smoothing={} map={} overscroll={} clickReturn={} (button {}) scrollReturn={} ({} units)",
+	logs::info("settings: maxDist={} step={} scaling={} smoothing={} map={} overscroll={} clickReturn={} (button {}) scrollReturn={}",
 		maxZoomDistance, zoomStep, distanceScaling, smoothing, enableMapTransition, overscrollNotches,
-		clickReturn, returnButton, scrollReturn, scrollReturnDistance);
+		clickReturn, returnButton, scrollReturn);
 }

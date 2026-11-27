@@ -20,7 +20,6 @@ struct Settings
 	int   returnButton = 2;            // mouse button id: 2 = wheel click
 	bool  scrollReturn = false;        // scroll in past the map's lowest height returns to the player
 	int   returnNotches = 2;           // notches past the map floor before closing (scrollReturn)
-	float scrollReturnDistance = 210.0f;  // game units the camera jumps to (210 ~= 3 m)
 
 	// [Debug]
 	bool  debugLogging = false;

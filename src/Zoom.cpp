@@ -50,18 +50,6 @@ void Zoom::RequestReturnFromMap(float a_normalized)
 	_returnPending = true;
 }
 
-float Zoom::DistanceToNormalized(float a_units) const
-{
-	// Assumes the engine maps normalized zoom linearly onto [fVanityModeMinDist, fVanityModeMaxDist].
-	// Verify in game; adjust here if the curve turns out non-linear.
-	const float minDist = GameSettings::GetFloat("fVanityModeMinDist:Camera").value_or(150.0f);
-	const float maxDist = GameSettings::GetFloat("fVanityModeMaxDist:Camera").value_or(Settings::Get().maxZoomDistance);
-	if (maxDist <= minDist) {
-		return 1.0f;
-	}
-	return std::clamp((a_units - minDist) / (maxDist - minDist), _min, 1.0f);
-}
-
 void Zoom::PreUpdate(RE::ThirdPersonState* a_state)
 {
 	const auto& cfg = Settings::Get();

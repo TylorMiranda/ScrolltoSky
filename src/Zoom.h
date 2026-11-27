@@ -25,8 +25,8 @@ public:
 	// Called after our own map close: next update places the camera at a_normalized, no easing.
 	void RequestReturnFromMap(float a_normalized);
 
-	// Converts a camera distance in game units to the engine's normalized zoom value.
-	[[nodiscard]] float DistanceToNormalized(float a_units) const;
+	// Closest third-person zoom the engine allows (fMinCurrentZoom).
+	[[nodiscard]] float MinZoom() const { return _min; }
 
 	[[nodiscard]] float Target() const { return _target; }
 

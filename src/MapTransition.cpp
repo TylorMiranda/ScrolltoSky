@@ -114,6 +114,7 @@ void MapTransition::OnMenu(bool a_opening)
 	if (a_opening) {
 		_mapOpen = true;
 		_zValid = false;
+		_zoomMoved = false;
 		_inCount = 0;
 		_lastIn = {};
 		return;
@@ -145,7 +146,11 @@ void MapTransition::OnMapCameraPreUpdate(RE::MapCameraStates::World* a_state)
 		}
 	}
 
-	_z = a_state->currentPosition.z;
+	const float z = a_state->currentPosition.z;
+	if (_zValid && std::abs(z - _z) > 1.0f && _forceLowFrames == 0) {
+		_zoomMoved = true;
+	}
+	_z = z;
 	_zValid = true;
 }
 
@@ -172,7 +177,9 @@ void MapTransition::OnMapWheel(bool a_zoomOut)
 	}
 
 	// Learn the floor: two spaced-out zoom-in notches with no height change.
-	if (!atFloor && _lastIn != Clock::time_point{} && Seconds(now - _lastIn) > 0.2f &&
+	// Requires the map zoom to have moved this session, so a zoom-locked map
+	// (A Quality World Map paper version) never reads as "at floor".
+	if (!atFloor && _zoomMoved && _lastIn != Clock::time_point{} && Seconds(now - _lastIn) > 0.2f &&
 		std::abs(_z - _zAtLastIn) < 1.0f) {
 		_learnedFloor = _z;
 		atFloor = true;
@@ -192,8 +199,8 @@ void MapTransition::OnMapWheel(bool a_zoomOut)
 	}
 	if (++_inCount >= cfg.returnNotches) {
 		_inCount = 0;
-		// Scroll return: jump straight to close third person (fScrollReturnDistance).
-		CloseMap(Zoom::Get().DistanceToNormalized(cfg.scrollReturnDistance));
+		// Scroll return: jump straight to the minimum third-person distance.
+		CloseMap(Zoom::Get().MinZoom());
 	}
 }
 

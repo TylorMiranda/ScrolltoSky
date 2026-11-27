@@ -10,6 +10,8 @@ Native SKSE plugin, one DLL for every flat Skyrim runtime.
 - SKSE matching your runtime
 - Address Library for SKSE Plugins (the "All in one" package for SE/AE, or the GOG build)
 
+Compatible with A Quality World Map (Vivid, Classic, and Paper). On the Paper map, zoom is locked by that mod, so scroll return stays inactive and click return is the way back.
+
 ## Install (MO2)
 
 Install the release zip as a mod. Config: `SKSE/Plugins/ScrollToSky.ini`. Log: `Documents/My Games/Skyrim Special Edition/SKSE/ScrollToSky.log`.
@@ -21,7 +23,7 @@ Install the release zip as a mod. Config: `SKSE/Plugins/ScrollToSky.ini`. Log: `
 | 1 | Extended third-person max zoom (`fVanityModeMaxDist`) | Implemented, untested in game |
 | 2 | Eased, distance-scaled wheel zoom | Implemented, untested in game |
 | 3 | Overscroll past max zoom opens the world map | Implemented, untested in game |
-| 4 | Return from map: wheel click lands at max third-person distance (default); optional scroll-in past map floor jumps to ~3 m | Implemented, untested in game |
+| 4 | Return from map: wheel click lands at max third-person distance (default); optional scroll-in past map floor jumps to minimum third-person distance | Implemented, untested in game |
 | 5 | Map opens at lowest height, preload, alignment polish | Groundwork only (`bStartMapZoomedIn`) |
 
 ## How it works
