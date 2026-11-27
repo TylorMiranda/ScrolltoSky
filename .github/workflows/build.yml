@@ -1,0 +1,57 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Cache xmake packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\AppData\Local\.xmake\packages
+          key: xmake-${{ runner.os }}-${{ hashFiles('xmake.lua', 'lib/commonlibsse-ng/xmake.lua') }}
+
+      - name: Configure
+        run: xmake config -y -m releasedbg --skyrim_vr=n
+
+      - name: Build
+        run: xmake build -y -v ScrollToSky
+
+      - name: Package for MO2
+        shell: pwsh
+        run: |
+          $out = "package/SKSE/Plugins"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          Get-ChildItem -Recurse build -Include ScrollToSky.dll,ScrollToSky.pdb | Copy-Item -Destination $out
+          Copy-Item dist/SKSE/Plugins/ScrollToSky.ini $out
+          Get-ChildItem -Recurse package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ScrollToSky
+          path: package/
+
+      - name: Zip for release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Compress-Archive -Path package/* -DestinationPath ScrollToSky-${{ github.ref_name }}.zip
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: ScrollToSky-${{ github.ref_name }}.zip

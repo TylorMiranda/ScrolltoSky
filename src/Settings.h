@@ -1,0 +1,33 @@
+#pragma once
+
+struct Settings
+{
+	// [Zoom]
+	float maxZoomDistance = 3000.0f;  // game units; vanilla fVanityModeMaxDist is 600
+	float zoomStep = 0.06f;           // normalized zoom per wheel notch near the player
+	float distanceScaling = 2.0f;     // step grows with distance: step * (1 + scaling * zoom)
+	float smoothing = 9.0f;           // easing speed, higher = snappier
+
+	// [Map]
+	bool  enableMapTransition = true;
+	int   overscrollNotches = 2;      // extra notches past max zoom before the map opens
+	float overscrollWindow = 0.8f;    // seconds; notches must land inside this window
+	bool  startMapZoomedIn = true;    // open the map at its lowest height (experimental)
+	bool  blockInCombat = false;
+
+	// [Return]
+	bool  enableReturn = true;
+	int   returnNotches = 2;          // notches past the map's lowest height before closing
+	float returnLandingZoom = 0.85f;  // normalized zoom the camera eases to after the map closes
+
+	// [Debug]
+	bool  debugLogging = false;
+
+	static Settings& Get()
+	{
+		static Settings s;
+		return s;
+	}
+
+	void Load();
+};
